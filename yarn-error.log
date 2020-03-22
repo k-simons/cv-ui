@@ -1,0 +1,27 @@
+Arguments: 
+  /usr/local/Cellar/node/12.12.0/bin/node /usr/local/Cellar/yarn/1.19.1/libexec/bin/yarn.js add @vue/cli
+
+PATH: 
+  /Users/ksimons/.jenv/shims:/Users/ksimons/.jenv/shims:/Users/ksimons/.jenv/bin:/opt/local/bin:/opt/local/sbin:/Users/ksimons/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Users/ksimons/bin:/usr/local/go/bin:/Users/ksimons/go/bin:/Users/ksimons/executables
+
+Yarn version: 
+  1.19.1
+
+Node version: 
+  10.13.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: getaddrinfo ENOTFOUND artifactory.palantir.build artifactory.palantir.build:443
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:57:26)
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
