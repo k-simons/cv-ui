@@ -2,3 +2,7 @@
 // Blueprint core
 @import "~@blueprintjs/core/lib/scss/variables";
 @import "~@blueprintjs/core/lib/css/blueprint.css";
+// Blueprint Icons
+@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
+
+@import "./components/core/all.scss";

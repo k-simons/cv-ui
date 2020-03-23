@@ -4,6 +4,8 @@ import { Fetcher, ScrapeResult } from "./data-fetching/fetcher";
 import { LoadingView } from "./components/loading-views/loader";
 import { GraphView } from "./components/core/graph";
 import './index.scss';
+import { TabSplit } from "./components/core/tab-split";
+import { RootView } from "./components/core/root";
 
 class RootLoadingView extends React.PureComponent<any, any> {
 
@@ -17,6 +19,7 @@ class RootLoadingView extends React.PureComponent<any, any> {
     }
 
     public renderCallBack = (scrapeResult: ScrapeResult) => {
+        return <RootView scrapeResult={scrapeResult}/>
         return <GraphView
             scrapeResult={scrapeResult}
         />
