@@ -66,7 +66,7 @@ export class RootView extends React.PureComponent<IProps, IState> {
 
     private getMain() {
         if (this.state.activeMain === "Over Time") {
-            return <TabSplit/>;
+            return <TabSplit scrapeResult={this.props.scrapeResult}/>;
         }
         return null
     }

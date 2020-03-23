@@ -1,0 +1,24 @@
+.cv-tabsplit {
+
+    .cv-tabsplit-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    .bp3-tab-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 70px;
+        bottom: 0;
+    }
+
+    .cv-tabsplit-wrapper {
+        position: absolute;
+        left: 15px;
+        right: 15px;
+        top: 0;
+        bottom: 15px;
+    }
+}

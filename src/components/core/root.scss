@@ -30,5 +30,7 @@ $spacing: 15px;
         padding: $spacing;
         border-left: solid 1px $light-gray2;
         flex: 5;
+        overflow: auto;
+        position: relative;
     }
 }

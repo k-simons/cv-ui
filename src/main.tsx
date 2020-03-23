@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Fetcher, ScrapeResult } from "./data-fetching/fetcher";
 import { LoadingView } from "./components/loading-views/loader";
+import { FocusStyleManager } from "@blueprintjs/core";
 import { GraphView } from "./components/core/graph";
 import './index.scss';
 import { TabSplit } from "./components/core/tab-split";
@@ -27,6 +28,7 @@ class RootLoadingView extends React.PureComponent<any, any> {
 }
 
 export function renderApp(appElement: Element) {
+    FocusStyleManager.onlyShowFocusOnTabs();
     ReactDOM.render(<RootLoadingView />, appElement);
 }
 
