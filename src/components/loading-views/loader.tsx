@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { Spinner } from "@blueprintjs/core";
+
 interface IProps<T> {
     promise: Promise<T>
     renderCallback(data: T): JSX.Element
@@ -23,7 +25,7 @@ export class LoadingView<T> extends React.PureComponent<IProps<T>, any> {
 
     public render() {
         if (this.state.data == null) {
-            return "Spinner"
+            return <Spinner/>
         }
         return this.props.renderCallback(this.state.data)
     }
