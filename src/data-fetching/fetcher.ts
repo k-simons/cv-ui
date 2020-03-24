@@ -1,9 +1,7 @@
 
 
-export interface ScrapeResult {
-    scrapeTime: string;
-    rowResults: Array<RowResult>;
-}
+export interface ScrapeResult {[region: string]: IDateMap }
+export interface IDateMap {[date: string]: Array<RowResult>; }
 
 export interface RowResult {
     state: string;
