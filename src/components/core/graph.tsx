@@ -51,6 +51,14 @@ const series = [
 
 
   // http://recharts.org/en-US/examples/SimpleBarChart
+
+  /**
+   *
+  next
+  1) Key of RowResult to select the data set
+  2) Dropdown to filter
+  3) And to limit
+   */
 export class GraphView extends React.PureComponent<IProps, any> {
     public render() {
         const dataMap = this.filterTheGraph(this.props.dateMap)
