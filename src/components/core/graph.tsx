@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IDateMap } from "../../data-fetching/fetcher";
+import { IDateMap, RowResult } from "../../data-fetching/fetcher";
 import { XAxis, LineChart, BarChart, YAxis, Legend, CartesianGrid, Line, Tooltip, Bar } from "recharts";
 
 
@@ -59,7 +59,21 @@ const series = [
   2) Dropdown to filter
   3) And to limit
    */
-export class GraphView extends React.PureComponent<IProps, any> {
+
+
+  type KeyOfRowResultWithAll = Omit<RowResult, "state">
+  type KeyOfRowResult = keyof KeyOfRowResultWithAll;
+
+  interface IState {
+    activeSeries: KeyOfRowResult
+}
+
+export class GraphView extends React.PureComponent<IProps, IState> {
+
+    public state: IState = {
+        activeSeries: "newCases",
+    };
+
     public render() {
         const dataMap = this.filterTheGraph(this.props.dateMap)
         const seriesSet: Array<ISingleSeries> = []
@@ -69,7 +83,7 @@ export class GraphView extends React.PureComponent<IProps, any> {
                 const existingSet = seriesSet.find(s => s.name == r.state)
                 const singleData: ISingleDate = {
                     category: singleDate,
-                    value: r.totalDeaths,
+                    value: r[this.state.activeSeries],
                 }
                 if (existingSet == null) {
                     const singleSeries :ISingleSeries = {
@@ -127,9 +141,9 @@ export class GraphView extends React.PureComponent<IProps, any> {
             dateMap[date].map(r => {
                 const existing = filterSets.find(f => f.name == r.state)
                 if (existing == null) {
-                    filterSets.push({count: r.total, name: r.state})
+                    filterSets.push({count: r[this.state.activeSeries], name: r.state})
                 } else {
-                    existing.count = existing.count + r.total
+                    existing.count = existing.count + r[this.state.activeSeries]
                 }
             })
         })
