@@ -3,7 +3,7 @@
  */
 import { Classes, IPopoverProps, ITagInputProps, MenuItem, Popover, Position } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
-import { IItemRendererProps, IMultiSelectProps, MultiSelect } from "@blueprintjs/select";
+import { IMultiSelectProps, MultiSelect } from "@blueprintjs/select";
 import * as classNames from "classnames";
 import * as React from "react";
 
@@ -110,7 +110,7 @@ export class AriesMultiSelect<T> extends React.PureComponent<IAriesMultiSelectPr
         this.props.onItemSelect(selectedItems);
     }
 
-    private itemRenderer = (item: T, itemProps: IItemRendererProps) => {
+    private itemRenderer = (item: T, itemProps: any) => {
         if (!itemProps.modifiers.matchesPredicate ||
             (itemProps.index === undefined || itemProps.index > MAX_ITEMS_TO_RENDER)) {
             return null;

@@ -2,7 +2,9 @@ import * as React from "react";
 import { IDateMap, RowResult } from "../../data-fetching/fetcher";
 import { XAxis, LineChart, BarChart, YAxis, Legend, CartesianGrid, Line, Tooltip, Bar } from "recharts";
 import { Classes, IButtonProps, IPopoverProps, MenuItem, Position } from "@blueprintjs/core";
-// import { MAX_ITEMS_TO_RENDER} from "../select/singleSelect"
+import { MAX_ITEMS_TO_RENDER, SingleSelect } from "../select/singleSelect/singleSelect";
+import { AriesMultiSelect } from "../select/ariesMultiSelect/ariesMultiSelect";
+
 
 
 interface IProps {
@@ -68,18 +70,27 @@ const series = [
 
   interface IState {
     activeSeries: KeyOfRowResult
+    stateFilter: Array<string>
 }
 
-
-
+const VizSelect = SingleSelect.ofType<KeyOfRowResult>();
+const StringMultiSelect = AriesMultiSelect.ofType<string>();
 
 export class GraphView extends React.PureComponent<IProps, IState> {
 
     public state: IState = {
         activeSeries: "newCases",
+        stateFilter: []
     };
 
     public render() {
+        const stateList = {}
+        Object.values(this.props.dateMap).forEach(a => {
+            a.forEach(b => {
+                (stateList as any)[b.state] = {}
+            })
+        })
+        const items = Object.keys(stateList).sort() as Array<string>
         const dataMap = this.filterTheGraph(this.props.dateMap)
         const seriesSet: Array<ISingleSeries> = []
         Object.keys(dataMap).sort().map(singleDate => {
@@ -125,8 +136,22 @@ export class GraphView extends React.PureComponent<IProps, IState> {
 
          // <SelectButton/>
          */
+
         return (
             <div className="ar-grah-div">
+                <VizSelect
+                    itemToString={(t => t)}
+                    items={["newCases", "newDeaths", "total", "totalDeaths", "totalRecovered", "activeCases"]}
+                    onItemSelect={(activeSeries => this.setState({activeSeries}))}
+                    value={this.state.activeSeries}
+                />
+                <StringMultiSelect
+                    itemToString={(t => t)}
+                    items={items}
+                    onItemSelect={(stateFilter => this.setState({stateFilter}))}
+                    values={this.state.stateFilter}
+                />
+
                 <LineChart width={500} height={300}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="category" type="category" allowDuplicatedCategory={false} />
@@ -164,11 +189,13 @@ export class GraphView extends React.PureComponent<IProps, IState> {
         const filteredDateMap: IDateMap = {}
         Object.keys(dateMap).map(date => {
             dateMap[date].map(r => {
-                const existing = filterSets.find(f => f.name == r.state)
-                if (existing == null) {
-                    filterSets.push({count: r[this.state.activeSeries], name: r.state})
-                } else {
-                    existing.count = existing.count + r[this.state.activeSeries]
+                if (this.state.stateFilter.length == 0 || this.state.stateFilter.find(a => a == r.state) != undefined) {
+                    const existing = filterSets.find(f => f.name == r.state)
+                    if (existing == null) {
+                        filterSets.push({count: r[this.state.activeSeries], name: r.state})
+                    } else {
+                        existing.count = existing.count + r[this.state.activeSeries]
+                    }
                 }
             })
         })
