@@ -1,0 +1,19 @@
+.select-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: nowrap;
+
+    span:not(.bp3-icon) {
+        flex: 1;
+        text-align: left;
+    }
+
+    svg[data-icon="cross"] {
+        &:hover {
+            background: $light-gray3;
+        }
+    }
+}

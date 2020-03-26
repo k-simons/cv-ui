@@ -7,5 +7,8 @@
 
 @import "./components/core/all.scss";
 
+@import "./components/select/ariesMultiSelect/ariesMultiSelect.scss";
+@import "./components/select/selectButton/selectButton.scss";
+
 // Blueprint Select
 @import "~@blueprintjs/select/lib/css/blueprint-select.css";

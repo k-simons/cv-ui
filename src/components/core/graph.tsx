@@ -1,6 +1,8 @@
 import * as React from "react";
 import { IDateMap, RowResult } from "../../data-fetching/fetcher";
 import { XAxis, LineChart, BarChart, YAxis, Legend, CartesianGrid, Line, Tooltip, Bar } from "recharts";
+import { Classes, IButtonProps, IPopoverProps, MenuItem, Position } from "@blueprintjs/core";
+// import { MAX_ITEMS_TO_RENDER} from "../select/singleSelect"
 
 
 interface IProps {
@@ -68,6 +70,9 @@ const series = [
     activeSeries: KeyOfRowResult
 }
 
+
+
+
 export class GraphView extends React.PureComponent<IProps, IState> {
 
     public state: IState = {
@@ -118,20 +123,40 @@ export class GraphView extends React.PureComponent<IProps, IState> {
              <Bar dataKey="total" fill="#8884d8" />
          </BarChart>
 
+         // <SelectButton/>
          */
         return (
-            <div className="ar-root-div">
-            <LineChart width={500} height={300}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="category" type="category" allowDuplicatedCategory={false} />
-                <YAxis dataKey="value" />
-                <Tooltip />
-                {seriesSet.map(s => (
-                <Line dataKey="value" data={s.data} name={s.name} key={s.name} />
-                ))}
-            </LineChart>
+            <div className="ar-grah-div">
+                <LineChart width={500} height={300}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="category" type="category" allowDuplicatedCategory={false} />
+                    <YAxis dataKey="value" />
+                    <Tooltip />
+                    {seriesSet.map(s => (
+                    <Line dataKey="value" data={s.data} name={s.name} key={s.name} />
+                    ))}
+                </LineChart>
             </div>
         )
+    }
+
+    private onItemSelect = (activeItem: string) => {
+        console.log(activeItem)
+    }
+
+    private itemRenderer = (item: string, itemProps: any) => {
+        if (!itemProps.modifiers.matchesPredicate) {
+            return null;
+        }
+        return (
+            <MenuItem
+                className={itemProps.modifiers.active ? Classes.ACTIVE : ""}
+                key={itemProps.index}
+                onClick={itemProps.handleClick}
+                text={item}
+                shouldDismissPopover={false}
+            />
+        );
     }
 
     private filterTheGraph(dateMap: IDateMap): IDateMap {
