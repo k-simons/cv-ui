@@ -152,7 +152,7 @@ export class GraphView extends React.PureComponent<IProps, IState> {
                     values={this.state.stateFilter}
                 />
 
-                <LineChart width={500} height={300}>
+                <LineChart width={1000} height={600}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="category" type="category" allowDuplicatedCategory={false} />
                     <YAxis dataKey="value" />
