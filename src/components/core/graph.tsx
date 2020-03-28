@@ -1,6 +1,6 @@
 import * as React from "react";
 import { IDateMap, RowResult } from "../../data-fetching/fetcher";
-import { XAxis, LineChart, BarChart, YAxis, Legend, CartesianGrid, Line, Tooltip, Bar } from "recharts";
+import { XAxis, LineChart, BarChart, YAxis, Legend, CartesianGrid, Line, Tooltip, Bar, ItemSorter , TooltipPayload } from "recharts";
 import { Classes, IButtonProps, IPopoverProps, MenuItem, Position } from "@blueprintjs/core";
 import { MAX_ITEMS_TO_RENDER, SingleSelect } from "../select/singleSelect/singleSelect";
 import { AriesMultiSelect } from "../select/ariesMultiSelect/ariesMultiSelect";
@@ -71,6 +71,7 @@ const series = [
   interface IState {
     activeSeries: KeyOfRowResult
     stateFilter: Array<string>
+    excludeStateFilter: Array<string>
 }
 
 const VizSelect = SingleSelect.ofType<KeyOfRowResult>();
@@ -80,6 +81,7 @@ export class GraphView extends React.PureComponent<IProps, IState> {
 
     public state: IState = {
         activeSeries: "newCases",
+        excludeStateFilter: [],
         stateFilter: []
     };
 
@@ -139,30 +141,59 @@ export class GraphView extends React.PureComponent<IProps, IState> {
 
         return (
             <div className="ar-grah-div">
-                <VizSelect
-                    itemToString={(t => t)}
-                    items={["newCases", "newDeaths", "total", "totalDeaths", "totalRecovered", "activeCases"]}
-                    onItemSelect={(activeSeries => this.setState({activeSeries}))}
-                    value={this.state.activeSeries}
-                />
-                <StringMultiSelect
-                    itemToString={(t => t)}
-                    items={items}
-                    onItemSelect={(stateFilter => this.setState({stateFilter}))}
-                    values={this.state.stateFilter}
-                />
-
+                <div className="ar-grah-filter-div">
+                    <VizSelect
+                        itemToString={(t => t)}
+                        items={["newCases", "newDeaths", "total", "totalDeaths", "totalRecovered", "activeCases"]}
+                        onItemSelect={(activeSeries => this.setState({activeSeries}))}
+                        value={this.state.activeSeries}
+                    />
+                    <StringMultiSelect
+                        itemToString={(t => t)}
+                        items={items}
+                        onItemSelect={(stateFilter => this.setState({stateFilter}))}
+                        values={this.state.stateFilter}
+                    />
+                    <StringMultiSelect
+                        itemToString={(t => t)}
+                        items={items}
+                        onItemSelect={(excludeStateFilter => this.setState({excludeStateFilter}))}
+                        values={this.state.excludeStateFilter}
+                    />
+                </div>
                 <LineChart width={1000} height={600}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="category" type="category" allowDuplicatedCategory={false} />
                     <YAxis dataKey="value" />
-                    <Tooltip />
-                    {seriesSet.map(s => (
-                    <Line dataKey="value" data={s.data} name={s.name} key={s.name} />
+                    <Tooltip
+                    itemSorter={(a, b) => this.itemSorter(a, b)}
+                    />
+                    {seriesSet.map((s, i) => (
+                    <Line dataKey="value" data={s.data} name={s.name} key={s.name} stroke={this.getFill(i)} />
                     ))}
                 </LineChart>
             </div>
         )
+    }
+
+    private getFill(index: number): string {
+        const fills = ["#2965CC", "#29A634", "#D99E0B", "#D13913", "#8F398F", "#00B3A4", "#DB2C6F", "#9BBF30", "#96622D", "#7157D9"]
+        return fills[index % 10]
+    }
+
+    private itemSorter(a: TooltipPayload, b: TooltipPayload): number {
+        return (a.value as number) * -1
+        console.log(b)
+        if (a == null && b == null) {
+            return 0
+        }
+        if (a == null) {
+            return 1
+        }
+        if (b == null) {
+            return -1
+        }
+        return (a.value as number) - (b.value as number)
     }
 
     private onItemSelect = (activeItem: string) => {
@@ -189,7 +220,7 @@ export class GraphView extends React.PureComponent<IProps, IState> {
         const filteredDateMap: IDateMap = {}
         Object.keys(dateMap).map(date => {
             dateMap[date].map(r => {
-                if (this.state.stateFilter.length == 0 || this.state.stateFilter.find(a => a == r.state) != undefined) {
+                if (this.passedFilter(r)) {
                     const existing = filterSets.find(f => f.name == r.state)
                     if (existing == null) {
                         filterSets.push({count: r[this.state.activeSeries], name: r.state})
@@ -210,6 +241,18 @@ export class GraphView extends React.PureComponent<IProps, IState> {
         })
         console.log(filteredDateMap)
         return filteredDateMap
+    }
+
+    private passedFilter(rowResult: RowResult): boolean {
+        return this.passedStateFilter(rowResult) && this.passedStateExclude(rowResult)
+    }
+
+    private passedStateFilter(rowResult: RowResult): boolean {
+        return this.state.stateFilter.length == 0 || this.state.stateFilter.find(a => a == rowResult.state) != undefined
+    }
+
+    private passedStateExclude(rowResult: RowResult): boolean {
+        return this.state.excludeStateFilter.length == 0 || this.state.excludeStateFilter.find(a => a == rowResult.state) == undefined
     }
 
 }
