@@ -1,7 +1,7 @@
 import * as React from "react";
 import { IDateMap, RowResult } from "../../data-fetching/fetcher";
 import { XAxis, LineChart, BarChart, YAxis, Legend, CartesianGrid, Line, Tooltip, Bar, ItemSorter , TooltipPayload } from "recharts";
-import { Classes, IButtonProps, IPopoverProps, MenuItem, Position } from "@blueprintjs/core";
+import { Classes, IButtonProps, Checkbox, IPopoverProps, MenuItem, Position } from "@blueprintjs/core";
 import { MAX_ITEMS_TO_RENDER, SingleSelect } from "../select/singleSelect/singleSelect";
 import { AriesMultiSelect } from "../select/ariesMultiSelect/ariesMultiSelect";
 
@@ -71,6 +71,7 @@ const series = [
   interface IState {
     activeSeries: KeyOfRowResult
     stateFilter: Array<string>
+    showDiff: boolean
     excludeStateFilter: Array<string>
 }
 
@@ -82,6 +83,7 @@ export class GraphView extends React.PureComponent<IProps, IState> {
     public state: IState = {
         activeSeries: "newCases",
         excludeStateFilter: [],
+        showDiff: true,
         stateFilter: []
     };
 
@@ -160,6 +162,10 @@ export class GraphView extends React.PureComponent<IProps, IState> {
                         onItemSelect={(excludeStateFilter => this.setState({excludeStateFilter}))}
                         values={this.state.excludeStateFilter}
                     />
+                    <Checkbox
+                        checked={this.state.showDiff}
+                        onChange={this.onCheckChange}
+                    />
                 </div>
                 <LineChart width={1000} height={600}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -174,6 +180,10 @@ export class GraphView extends React.PureComponent<IProps, IState> {
                 </LineChart>
             </div>
         )
+    }
+
+    private onCheckChange = () => {
+        this.setState({showDiff: !this.state.showDiff})
     }
 
     private getFill(index: number): string {
@@ -218,7 +228,8 @@ export class GraphView extends React.PureComponent<IProps, IState> {
     private filterTheGraph(dateMap: IDateMap): IDateMap {
         const filterSets: Array<IFilterSet> = []
         const filteredDateMap: IDateMap = {}
-        Object.keys(dateMap).map(date => {
+        const keys = Object.keys(dateMap).sort()
+        keys.map((date, i) => {
             dateMap[date].map(r => {
                 if (this.passedFilter(r)) {
                     const existing = filterSets.find(f => f.name == r.state)
